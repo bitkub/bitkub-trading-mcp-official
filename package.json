@@ -1,0 +1,63 @@
+{
+  "name": "bitkub-trading-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for the Bitkub cryptocurrency exchange. Connect Claude/Cursor/any MCP client to live Thai crypto markets via natural language.",
+  "type": "module",
+  "bin": {
+    "bitkub-trading-mcp": "dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/index.js",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "build": "bun build src/index.ts --compile --outfile dist/bitkub-trading-mcp",
+    "build:npm": "bun run scripts/build-npm.ts",
+    "build:linux-x64": "bun build src/index.ts --compile --target=bun-linux-x64 --outfile dist/bitkub-trading-mcp-linux-x64",
+    "build:linux-arm64": "bun build src/index.ts --compile --target=bun-linux-arm64 --outfile dist/bitkub-trading-mcp-linux-arm64",
+    "build:macos-arm64": "bun build src/index.ts --compile --target=bun-darwin-arm64 --outfile dist/bitkub-trading-mcp-macos-arm64",
+    "build:macos-x64": "bun build src/index.ts --compile --target=bun-darwin-x64 --outfile dist/bitkub-trading-mcp-macos-x64",
+    "build:windows-x64": "bun build src/index.ts --compile --target=bun-windows-x64 --outfile dist/bitkub-trading-mcp-windows-x64.exe",
+    "build:all": "bun run build:linux-x64 && bun run build:linux-arm64 && bun run build:macos-arm64 && bun run build:macos-x64 && bun run build:windows-x64",
+    "prepublishOnly": "bun run build:npm"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "bitkub",
+    "cryptocurrency",
+    "crypto",
+    "exchange",
+    "trading",
+    "thailand",
+    "thai",
+    "claude",
+    "cursor",
+    "ai",
+    "ai-agent",
+    "fintech"
+  ],
+  "homepage": "https://github.com/topcraftcodes/bitkub-trading-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/topcraftcodes/bitkub-trading-mcp.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.13",
+    "bun-types": "latest"
+  }
+}
