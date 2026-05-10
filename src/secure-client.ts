@@ -99,7 +99,14 @@ async function bitkubSecureFetch(opts: BitkubFetchOptions): Promise<unknown> {
 
   if (opts.method === "GET") {
     const qs = queryStringWithMark(opts.query); // "?a=b" or ""
-    payload = `${timestamp}GET${opts.path}${qs}`;
+    // Bitkub quirk: v4 /api/v4/fiat/* endpoints sign the path WITHOUT the
+    // query string, even though the URL still includes it. v4 crypto and v3
+    // endpoints sign with the query string. Verified against all three fiat
+    // routes (accounts, deposit/history, withdraw/history) — server returns
+    // "Invalid X-BTK-SIGN" if you include the qs in the signature payload.
+    const isFiatV4 = opts.path.startsWith("/api/v4/fiat/");
+    const signedQs = isFiatV4 ? "" : qs;
+    payload = `${timestamp}GET${opts.path}${signedQs}`;
     fetchInit = {
       method: "GET",
       headers: {
@@ -109,7 +116,7 @@ async function bitkubSecureFetch(opts: BitkubFetchOptions): Promise<unknown> {
         "X-BTK-SIGN": sign(apiSecret, payload),
       },
     };
-    // url gets the query string for the actual request:
+    // url gets the (full) query string for the actual request:
     return doFetch(url + qs, fetchInit);
   }
 

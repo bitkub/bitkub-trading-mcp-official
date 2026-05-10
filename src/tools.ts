@@ -131,19 +131,28 @@ export function registerBitkubTools(server: McpServer): void {
     {
       title: "Bitkub Market Tickers (single or all)",
       description:
-        "GET /api/v3/market/ticker — returns 24h ticker (last/bid/ask/volume/24h-change). " +
-        "PREFERRED USAGE: omit `sym` to fetch ALL symbols in ONE call — never call this tool " +
-        "in a loop. If the user asks about 2+ symbols (e.g. 'compare BTC, ETH, ADA prices'), " +
+        "GET /api/v3/market/ticker — returns 24h ticker (last/bid/ask/volume/24h-change).\n\n" +
+        "PREFERRED USAGE: omit `sym` to fetch ALL ~430 symbols in ONE call — never call this " +
+        "tool in a loop. If the user asks about 2+ symbols (e.g. 'compare BTC, ETH, ADA prices'), " +
         "call once with no args and filter the result locally instead of calling 2+ times. " +
-        "Only pass `sym` when you genuinely need exactly one symbol.",
+        "Only pass `sym` when you genuinely need exactly one symbol.\n\n" +
+        "RESPONSE SHAPE — read carefully to avoid lookup mistakes:\n" +
+        "  - The response is a JSON ARRAY of objects, NOT a dict keyed by symbol.\n" +
+        "  - Each item shape: `{ symbol, last, lowest_ask, highest_bid, base_volume, quote_volume, " +
+        "high_24_hr, low_24_hr, percent_change }`. All numeric fields are strings.\n" +
+        "  - The `symbol` field is UPPERCASE in BASE_QUOTE order, e.g. `BTC_THB`, `ETH_THB`, " +
+        "`ADA_THB`. NOT `THB_BTC`. To look up Bitcoin, filter for `symbol === 'BTC_THB'`.\n" +
+        "  - Input `sym` is LOWERCASE `btc_thb`; output `symbol` is UPPERCASE `BTC_THB`. Same " +
+        "order, different case. Compare case-insensitively if matching across the boundary.\n" +
+        "  - Bitkub trades against THB only (no crypto-crypto pairs), so every `symbol` ends in `_THB`.",
       inputSchema: {
         sym: symSchema
           .optional()
           .describe(
-            "OPTIONAL — single trading pair like 'btc_thb'. Omit this argument entirely " +
-              "to receive all available symbols in one response. Do NOT call this tool " +
-              "multiple times with different `sym` values; one call without `sym` is faster " +
-              "and avoids rate limits.",
+            "OPTIONAL — single trading pair, lowercase, base_quote order like 'btc_thb' " +
+              "(NOT 'thb_btc'). Omit this argument entirely to receive all ~430 symbols in " +
+              "one response. Do NOT call this tool multiple times with different `sym` " +
+              "values; one call without `sym` is faster and avoids rate limits.",
           ),
       },
     },

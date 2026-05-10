@@ -25,7 +25,7 @@ import { registerBitkubWsTools } from "./ws-tools.ts";
 async function main(): Promise<void> {
   const server = new McpServer({
     name: "bitkub-trading-mcp",
-    version: "1.0.1",
+    version: "1.0.2",
   });
 
   registerBitkubTools(server);
