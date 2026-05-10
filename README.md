@@ -131,7 +131,7 @@ Otherwise, just ask Claude *"What's in my Bitkub wallet?"* — if it returns bal
 | `bitkub_status`     | `GET /api/status`                                        |
 | `bitkub_servertime` | `GET /api/v3/servertime` (ms)                            |
 | `bitkub_symbols`    | `GET /api/v3/market/symbols`                             |
-| `bitkub_ticker`     | `GET /api/v3/market/ticker?sym=`                         |
+| `bitkub_ticker`     | `GET /api/v3/market/ticker?sym=` — omit `sym` to fetch ALL symbols in one call |
 | `bitkub_bids`       | `GET /api/v3/market/bids?sym=&lmt=`                      |
 | `bitkub_asks`       | `GET /api/v3/market/asks?sym=&lmt=`                      |
 | `bitkub_depth`      | `GET /api/v3/market/depth?sym=&lmt=`                     |
@@ -210,6 +210,7 @@ Tools are invoked by Claude based on what you ask in plain English. The "you say
 |---|---|---|
 | *"Is Bitkub's API up right now?"* | `bitkub_status` | Health-check the platform before placing orders manually. |
 | *"What's the current BTC/THB price?"* | `bitkub_ticker` with `sym=btc_thb` | Single-shot point-in-time price + 24h change. |
+| *"Compare BTC, ETH, ADA, USDT prices"* (any multi-symbol query) | `bitkub_ticker` with **no args** — ONE call returns ALL symbols | Don't loop per-symbol; one batched call is faster and avoids rate limits. |
 | *"Show me top 10 buy orders for ETH/THB"* | `bitkub_bids` with `sym=eth_thb, lmt=10` | Open buy orders (bids). Use `bitkub_asks` for sells. |
 | *"What's the order book depth for BTC/THB, top 20 levels?"* | `bitkub_depth` with `sym=btc_thb, lmt=20` | Aggregated bids/asks — best for spread analysis. |
 | *"Last 50 trades on USDT/THB"* | `bitkub_trades` with `sym=usdt_thb, lmt=50` | Recent matched trades (timestamp, price, side, amount). |

@@ -129,13 +129,22 @@ export function registerBitkubTools(server: McpServer): void {
   server.registerTool(
     "bitkub_ticker",
     {
-      title: "Bitkub Market Ticker",
+      title: "Bitkub Market Tickers (single or all)",
       description:
-        "GET /api/v3/market/ticker — 24h ticker for one symbol (omit `sym` to fetch all).",
+        "GET /api/v3/market/ticker — returns 24h ticker (last/bid/ask/volume/24h-change). " +
+        "PREFERRED USAGE: omit `sym` to fetch ALL symbols in ONE call — never call this tool " +
+        "in a loop. If the user asks about 2+ symbols (e.g. 'compare BTC, ETH, ADA prices'), " +
+        "call once with no args and filter the result locally instead of calling 2+ times. " +
+        "Only pass `sym` when you genuinely need exactly one symbol.",
       inputSchema: {
         sym: symSchema
           .optional()
-          .describe("Trading pair, e.g. 'btc_thb'. Omit to fetch all symbols."),
+          .describe(
+            "OPTIONAL — single trading pair like 'btc_thb'. Omit this argument entirely " +
+              "to receive all available symbols in one response. Do NOT call this tool " +
+              "multiple times with different `sym` values; one call without `sym` is faster " +
+              "and avoids rate limits.",
+          ),
       },
     },
     async (args) => {

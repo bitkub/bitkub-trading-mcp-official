@@ -1,6 +1,6 @@
 {
   "name": "bitkub-trading-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for the Bitkub cryptocurrency exchange. Connect Claude/Cursor/any MCP client to live Thai crypto markets via natural language.",
   "type": "module",
   "bin": {
